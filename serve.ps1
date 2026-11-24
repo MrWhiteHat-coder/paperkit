@@ -25,6 +25,10 @@ try {
     $ctx = $listener.GetContext()
     try {
       $rel = [Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath).TrimStart('/').Replace('/', '\')
+      # only answer requests addressed to this computer (blocks DNS-rebinding tricks from other websites)
+      $hostName = ($ctx.Request.Headers['Host'] -replace ':\d+$', '').ToLower()
+      if ($hostName -notin @('localhost', '127.0.0.1', '[::1]')) { $ctx.Response.StatusCode = 403; continue }
+      if ($ctx.Request.HttpMethod -notin @('GET', 'HEAD')) { $ctx.Response.StatusCode = 405; continue }
       $file = [System.IO.Path]::GetFullPath((Join-Path $rootFull $rel))
       if (-not $file.StartsWith($rootFull, [StringComparison]::OrdinalIgnoreCase) -and ($file + '\') -ne $rootFull) { $ctx.Response.StatusCode = 403; continue }
       if (Test-Path $file -PathType Container) { $file = Join-Path $file 'index.html' }
@@ -35,6 +39,9 @@ try {
       $ext = [System.IO.Path]::GetExtension($file).ToLower()
       $ctx.Response.ContentType = if ($types.ContainsKey($ext)) { $types[$ext] } else { 'application/octet-stream' }
       $ctx.Response.Headers.Add('Cache-Control', 'no-cache')
+      $ctx.Response.Headers.Add('X-Content-Type-Options', 'nosniff')
+      $ctx.Response.Headers.Add('X-Frame-Options', 'DENY')
+      $ctx.Response.Headers.Add('Referrer-Policy', 'no-referrer')
       $bytes = [System.IO.File]::ReadAllBytes($file)
       $ctx.Response.ContentLength64 = $bytes.Length
       $ctx.Response.OutputStream.Write($bytes, 0, $bytes.Length)

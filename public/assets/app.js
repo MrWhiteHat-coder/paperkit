@@ -17,7 +17,7 @@ let toastT;
 function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2600); }
 const pickOne = a => a[Math.floor(Math.random() * a.length)];
 function download(blob, name) {
-  const a = h('a', { href: URL.createObjectURL(blob), download: name });
+  const a = h('a', { href: URL.createObjectURL(blob), download: E.safeName(name) });
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 60000);
 }

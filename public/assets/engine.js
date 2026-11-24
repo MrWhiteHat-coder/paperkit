@@ -80,7 +80,9 @@ export const isHeic = f => /image\/hei[cf]/.test(f.type) || /\.hei[cf]$/i.test(f
 export const isImage = f => f.type.startsWith('image/') || isHeic(f) || /\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name);
 export const bytesOf = async f => f._buf ||= new Uint8Array(await f.arrayBuffer());
 export const fmt = b => b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
-export const base = n => n.replace(/\.[^.]+$/, '');
+// file names we create: no path separators, control or reserved characters, sane length
+export const safeName = n => String(n).replace(/[\\/:*?"<>|\u0000-\u001f\u007f]+/g, '_').replace(/^[.\s]+/, '').slice(-120) || 'paperkit';
+export const base = n => safeName(n).replace(/\.[^.]+$/, '');
 const toBlob = (c, type, q) => new Promise(r => c.toBlob(r, type, q));
 export const canvasBytes = async (c, type = 'image/jpeg', q = .9) => new Uint8Array(await (await toBlob(c, type, q)).arrayBuffer());
 
@@ -299,7 +301,8 @@ export async function sign(bytes, sigPng, spots) { // spots: [{page, x, y, w}] f
 
 export async function protect(bytes, pw) {
   const owner = Array.from(crypto.getRandomValues(new Uint8Array(12)), b => b.toString(16).padStart(2, '0')).join('');
-  return runQpdf(bytes, ['--encrypt', pw, owner, '256', '--']);
+  // named options, so a password that starts with "-" can never be read as a qpdf flag
+  return runQpdf(bytes, ['--encrypt', `--user-password=${pw}`, `--owner-password=${owner}`, '--bits=256', '--']);
 }
 export async function unlock(bytes, pw) {
   try { return await runQpdf(bytes, [`--password=${pw}`, '--decrypt']); }
@@ -318,6 +321,7 @@ export async function ocr(files, langs, progress) {
   progress?.(0, 'putting on reading glasses (one-time download)');
   const worker = await window.Tesseract.createWorker(langs, 1, {
     workerPath: `${V}/tesseract/worker.min.js`, workerBlobURL: false,
+    corePath: `${location.origin}${V}/tesseract/core`, // self-hosted engine: no third-party code runs on your files
     logger: m => { if (m.status === 'loading language traineddata') progress?.(0, `downloading ${langs} reading data ${Math.round((m.progress || 0) * 100)}%`); },
   });
   const canvases = [];
@@ -378,7 +382,7 @@ const crc32 = d => { let c = ~0; for (let i = 0; i < d.length; i++) c = CRC[(c ^
 export function zip(files) {
   const enc = new TextEncoder(), parts = [], central = []; let off = 0;
   for (const f of files) {
-    const name = enc.encode(f.name), d = f.data, crc = crc32(d);
+    const name = enc.encode(safeName(f.name)), d = f.data, crc = crc32(d);
     const h = new DataView(new ArrayBuffer(30));
     h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true);
     h.setUint32(14, crc, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true); h.setUint16(26, name.length, true);

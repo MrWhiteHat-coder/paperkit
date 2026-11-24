@@ -1,7 +1,7 @@
 // PaperKit service worker: makes Kit work offline and receives files shared from other apps.
-const V = 'pk-v2';
+const V = 'pk-v3';
 const CORE = [
-  '/', '/assets/app.css?v=2', '/assets/app.js?v=2', '/assets/kit.js', '/assets/engine.js', '/assets/tools.js',
+  '/', '/assets/app.css?v=3', '/assets/app.js?v=3', '/assets/kit.js', '/assets/engine.js', '/assets/tools.js',
   '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png',
   '/vendor/pdf-lib.min.js', '/vendor/pdfjs/pdf.min.mjs', '/vendor/pdfjs/pdf.worker.min.mjs',
   '/vendor/qpdf/qpdf.js', '/vendor/qpdf/qpdf.wasm', '/vendor/heic2any.min.js',
@@ -18,7 +18,11 @@ self.addEventListener('activate', e => {
 
 async function receiveShare(req) {
   const form = await req.formData();
-  const files = form.getAll('files').filter(f => f && typeof f !== 'string');
+  // only PDFs and images, at most 30 files and 600 MB in total: anything else is dropped
+  const okType = f => /^(application\/pdf|image\/)/.test(f.type) || /\.(pdf|jpe?g|png|webp|heic|heif)$/i.test(f.name || '');
+  let total = 0;
+  const files = form.getAll('files').filter(f => f && typeof f !== 'string' && okType(f)).slice(0, 30)
+    .filter(f => (total += f.size) <= 600 * 1024 * 1024);
   const cache = await caches.open('pk-share');
   for (const k of await cache.keys()) await cache.delete(k);
   await Promise.all(files.map((f, i) => cache.put(new Request(`/__shared/${i}`), new Response(f, { headers: { 'content-type': f.type || 'application/octet-stream', 'x-name': encodeURIComponent(f.name || `shared-${i + 1}`) } }))));

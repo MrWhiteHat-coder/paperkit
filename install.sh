@@ -5,6 +5,11 @@
 set -e
 DIR="${PAPERKIT_DIR:-$HOME/.paperkit}"
 PORT="${PAPERKIT_PORT:-4173}"
+# safety: never wipe a system folder or the home folder itself
+case "$DIR" in
+  ""|"/"|"$HOME"|"$HOME/"|/usr*|/etc*|/bin*|/var*|/System*) echo "  Refusing to install into '$DIR'. Set PAPERKIT_DIR to a new folder."; exit 1 ;;
+esac
+case "$PORT" in *[!0-9]*|"") echo "  PAPERKIT_PORT must be a number."; exit 1 ;; esac
 echo ""
 echo "  Installing PaperKit into $DIR ..."
 TMP=$(mktemp -d)

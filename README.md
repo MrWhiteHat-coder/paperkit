@@ -109,7 +109,7 @@ powershell -ExecutionPolicy Bypass -File serve.ps1   # Windows, no Node needed
 ## How private is it, really?
 
 - All processing uses JavaScript and WebAssembly **inside your tab**: [pdf-lib](https://github.com/Hopding/pdf-lib), [PDF.js](https://github.com/mozilla/pdf.js), [qpdf](https://github.com/qpdf/qpdf) (WASM), [Tesseract.js](https://github.com/naptha/tesseract.js) and [heic2any](https://github.com/alexcorvi/heic2any).
-- A strict **Content-Security-Policy** only allows the browser to talk to PaperKit itself and `cdn.jsdelivr.net` (which serves OCR language data downloads). There is no server code, no analytics, no cookies.
+- A strict **Content-Security-Policy** only allows the browser to talk to PaperKit itself and `cdn.jsdelivr.net/npm/@tesseract.js-data/` (OCR language data only, never code). Every library, including the OCR engine, is self-hosted. See [SECURITY.md](SECURITY.md). There is no server code, no analytics, no cookies.
 - Your saved signature and Exam mode settings live in your browser's local storage on your device, and can be cleared any time.
 
 ---
