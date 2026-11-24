@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PaperKit · PDF tools that never upload your files</title>
+<meta name="description" content="Merge, split, compress, sign, protect, OCR and exam-ready photos. 100% in your browser. Nothing is uploaded. Works offline. Free and open source.">
+<meta name="theme-color" content="#0E0C16">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; worker-src 'self' blob:; connect-src 'self' blob: data: https://cdn.jsdelivr.net; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta property="og:title" content="PaperKit · your PDFs never leave your device">
+<meta property="og:description" content="Free, private PDF tools with a tiny paper buddy called Kit. Works offline.">
+<meta property="og:image" content="https://paperkit-app.pages.dev/icons/og.png">
+<link rel="preload" href="/vendor/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/app.css?v=1">
+</head>
+<body data-mood="idle" data-acc="">
+<div class="drop" aria-hidden="true">Aaa… drop it in my mouth 😮</div>
+
+<div class="app">
+  <aside class="side" aria-label="Kit">
+    <div class="sidetop">
+      <a class="logo" href="#/" aria-label="PaperKit home"><i></i>PaperKit</a>
+      <span class="pill"><span class="dot"></span>Kit is <b id="moodWord">awake</b></span>
+    </div>
+    <div class="buddy">
+      <div class="bubble" aria-live="polite"><span id="say"></span></div>
+      <div class="kitbox" id="kitbox" title="Kit (poke me)">
+        <svg id="kit" viewBox="-20 -40 260 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs><clipPath id="bodyClip"><path d="M40 10H166L200 44V210Q200 230 180 230H40Q20 230 20 210V30Q20 10 40 10Z"/></clipPath></defs>
+          <ellipse class="shadow" cx="110" cy="250" rx="78" ry="9" fill="#000" opacity=".45"/>
+          <g id="kitBody">
+            <ellipse cx="72" cy="236" rx="18" ry="8" fill="#E4DFD3" stroke="#14111C" stroke-width="3"/>
+            <ellipse cx="148" cy="236" rx="18" ry="8" fill="#E4DFD3" stroke="#14111C" stroke-width="3"/>
+            <path d="M40 10H166L200 44V210Q200 230 180 230H40Q20 230 20 210V30Q20 10 40 10Z" fill="#F4F1EA" stroke="#14111C" stroke-width="3.5"/>
+            <rect id="belly" clip-path="url(#bodyClip)" x="20" y="230" width="180" height="0" fill="#A78BFA" opacity=".45"/>
+            <path d="M166 10V36Q166 44 174 44H200Z" fill="#DCD5C6" stroke="#14111C" stroke-width="3.5" stroke-linejoin="round"/>
+            <g stroke="#14111C" stroke-opacity=".12" stroke-width="3" stroke-linecap="round"><path d="M56 176H164"/><path d="M56 192H150"/><path d="M56 208H130"/></g>
+            <circle class="cheek" cx="58" cy="132" r="11" fill="#FF6B5B" opacity=".4"/>
+            <circle class="cheek" cx="162" cy="132" r="11" fill="#FF6B5B" opacity=".4"/>
+            <g class="eyes-open">
+              <g class="eye"><ellipse cx="80" cy="100" rx="19" ry="22" fill="#fff" stroke="#14111C" stroke-width="3.5"/><g class="pupil"><circle cx="80" cy="102" r="10" fill="#14111C"/><circle cx="84" cy="97" r="3.5" fill="#fff"/></g></g>
+              <g class="eye"><ellipse cx="140" cy="100" rx="19" ry="22" fill="#fff" stroke="#14111C" stroke-width="3.5"/><g class="pupil"><circle cx="140" cy="102" r="10" fill="#14111C"/><circle cx="144" cy="97" r="3.5" fill="#fff"/></g></g>
+            </g>
+            <g class="eyes-happy" fill="none" stroke="#14111C" stroke-width="5" stroke-linecap="round"><path d="M64 106Q80 86 96 106"/><path d="M124 106Q140 86 156 106"/></g>
+            <g class="eyes-sleep" fill="none" stroke="#14111C" stroke-width="5" stroke-linecap="round"><path d="M64 100Q80 112 96 100"/><path d="M124 100Q140 112 156 100"/></g>
+            <g class="eyes-sad" fill="none" stroke="#14111C" stroke-width="5" stroke-linecap="round"><path d="M66 92L94 100"/><path d="M154 92L126 100"/><circle cx="80" cy="108" r="5" fill="#14111C"/><circle cx="140" cy="108" r="5" fill="#14111C"/></g>
+            <g class="mouth">
+              <path class="m-smile" d="M96 138Q110 152 124 138" fill="none" stroke="#14111C" stroke-width="4.5" stroke-linecap="round"/>
+              <circle class="m-o" cx="110" cy="144" r="7" fill="#14111C"/>
+              <g class="m-open"><ellipse cx="110" cy="146" rx="17" ry="19" fill="#14111C"/><ellipse cx="110" cy="157" rx="10" ry="6" fill="#FF6B5B"/></g>
+              <path class="m-chew" d="M92 142l6-6 6 6 6-6 6 6 6-6 6 6" fill="none" stroke="#14111C" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path class="m-grin" d="M90 136Q110 166 130 136Z" fill="#14111C" stroke="#14111C" stroke-width="3" stroke-linejoin="round"/>
+              <path class="m-wob" d="M96 144q4.6-5 9.3 0t9.3 0 9.3 0" fill="none" stroke="#14111C" stroke-width="4" stroke-linecap="round"/>
+              <path class="m-sad" d="M96 150Q110 138 124 150" fill="none" stroke="#14111C" stroke-width="4.5" stroke-linecap="round"/>
+            </g>
+            <circle id="mouthAnchor" cx="110" cy="144" r="1" fill="none"/>
+            <g class="acc acc-cap"><path d="M52 -2L110 -26L168 -2L110 22Z" fill="#14111C"/><path d="M78 6V22Q110 36 142 22V6" fill="#14111C"/><path d="M168 -2V30" stroke="#D4FF3A" stroke-width="3"/><circle cx="168" cy="33" r="5" fill="#D4FF3A"/></g>
+            <g class="acc acc-glasses" fill="rgba(125,211,252,.18)" stroke="#14111C" stroke-width="4"><circle cx="80" cy="100" r="27"/><circle cx="140" cy="100" r="27"/><path d="M107 98Q110 92 113 98" fill="none"/></g>
+            <g class="acc acc-lock"><rect x="92" y="172" width="36" height="30" rx="6" fill="#D4FF3A" stroke="#14111C" stroke-width="3.5"/><path d="M99 172V164Q99 152 110 152Q121 152 121 164V172" fill="none" stroke="#14111C" stroke-width="3.5"/><circle cx="110" cy="186" r="4" fill="#14111C"/></g>
+            <g class="acc acc-key"><circle cx="100" cy="186" r="11" fill="#D4FF3A" stroke="#14111C" stroke-width="3.5"/><path d="M111 186H136M128 186V196M134 186V194" stroke="#14111C" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="acc acc-pen"><path d="M196 150L232 96" stroke="#14111C" stroke-width="9" stroke-linecap="round"/><path d="M196 150L232 96" stroke="#FF6B5B" stroke-width="5" stroke-linecap="round"/></g>
+            <g class="acc acc-scissors" stroke="#14111C" stroke-width="3.5" fill="#7DD3FC"><circle cx="222" cy="176" r="9"/><circle cx="222" cy="200" r="9"/><path d="M214 180L190 196M214 196L190 180" fill="none"/></g>
+            <g class="acc acc-camera"><rect x="84" y="166" width="52" height="36" rx="7" fill="#7DD3FC" stroke="#14111C" stroke-width="3.5"/><circle cx="110" cy="184" r="10" fill="#F4F1EA" stroke="#14111C" stroke-width="3.5"/><rect x="96" y="160" width="14" height="8" rx="2" fill="#14111C"/></g>
+            <circle class="hand handL" cx="10" cy="162" r="14" fill="#F4F1EA" stroke="#14111C" stroke-width="3.5"/>
+            <circle class="hand handR" cx="210" cy="162" r="14" fill="#F4F1EA" stroke="#14111C" stroke-width="3.5"/>
+            <text class="zz" x="186" y="6" font-size="22">z</text><text class="zz z2" x="204" y="-14" font-size="16">z</text>
+          </g>
+        </svg>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+    <div class="trust">
+      <span>🔒 <b>0 KB</b> uploaded, ever</span>
+      <span>✈️ Works <b>offline</b></span>
+      <span>⭐ Free &amp; <b>open source</b></span>
+    </div>
+  </aside>
+
+  <main id="view" tabindex="-1"></main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="/assets/app.js?v=1"></script>
+</body>
+</html>

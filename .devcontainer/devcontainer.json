@@ -1,0 +1,7 @@
+{
+  "name": "PaperKit",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "forwardPorts": [4173],
+  "portsAttributes": { "4173": { "label": "PaperKit", "onAutoForward": "openBrowser" } },
+  "postAttachCommand": "npx --yes serve -s public -l 4173"
+}

@@ -1,0 +1,9 @@
+// Used by the "Deploy to Cloudflare" button: serves /public as static files, free.
+{
+  "name": "paperkit",
+  "compatibility_date": "2025-11-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "single-page-application"
+  }
+}
