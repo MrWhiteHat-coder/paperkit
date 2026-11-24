@@ -1,7 +1,7 @@
 // PaperKit service worker: makes Kit work offline and receives files shared from other apps.
-const V = 'pk-v3';
+const V = 'pk-v4';
 const CORE = [
-  '/', '/assets/app.css?v=3', '/assets/app.js?v=3', '/assets/kit.js', '/assets/engine.js', '/assets/tools.js',
+  '/', '/assets/app.css?v=4', '/assets/app.js?v=4', '/assets/kit.js', '/assets/engine.js', '/assets/tools.js',
   '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png',
   '/vendor/pdf-lib.min.js', '/vendor/pdfjs/pdf.min.mjs', '/vendor/pdfjs/pdf.worker.min.mjs',
   '/vendor/qpdf/qpdf.js', '/vendor/qpdf/qpdf.wasm', '/vendor/heic2any.min.js',

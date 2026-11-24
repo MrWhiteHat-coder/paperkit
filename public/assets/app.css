@@ -128,7 +128,10 @@ h2{font-size:24px;letter-spacing:-.7px;font-weight:800}
 .tool small{font-size:13px;color:var(--muted);display:block;margin-top:3px;line-height:1.35}
 .tool.star{background:linear-gradient(120deg,#251C3A,#17141F);border-color:color-mix(in srgb,var(--lilac) 45%,transparent)}
 .tool .tag{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;font-weight:700;padding:4px 8px;border-radius:99px;background:var(--lilac);color:var(--ink)}
-.band{margin-top:34px;border-radius:24px;padding:22px;background:var(--card);border:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+.band{margin-top:34px;border-radius:24px;padding:22px;background:var(--card);border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
+/* never let a long line (commands, file names) push the page wider than the screen */
+.band>*,.opt,.opts>*,.frow .fi,.wrapc,.tools>*,.ecards>*,.steps3>*,.how>*{min-width:0}
+.band code{display:block;overflow-x:auto;white-space:nowrap}
 .band p{color:var(--muted);margin-top:6px;line-height:1.5;font-size:15px}
 .foot{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7;text-align:center}
 .foot a{color:var(--text)}
@@ -290,7 +293,7 @@ body.dragging .drop{opacity:1}
   .tools{grid-template-columns:1fr 1fr}
   .tool{padding:13px}
   .tool small{font-size:12.5px}
-  .band{grid-template-columns:1fr}
+  .band{grid-template-columns:minmax(0,1fr)}
   .ecards{grid-template-columns:1fr}
   .row4{grid-template-columns:1fr 1fr}
   .pages{grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:10px}
