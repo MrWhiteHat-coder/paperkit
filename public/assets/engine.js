@@ -91,8 +91,23 @@ export async function bitmapOf(file) {
     blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: .92 });
     if (Array.isArray(blob)) blob = blob[0];
   }
-  try { return await createImageBitmap(blob, { imageOrientation: 'from-image' }); }
-  catch { throw new Error(`Couldn't read ${file.name} as an image.`); }
+  // 1) fast path  2) same without options (older Android)  3) the classic <img> decoder, which phones handle best
+  try { return await createImageBitmap(blob, { imageOrientation: 'from-image' }); } catch { }
+  try { return await createImageBitmap(blob); } catch { }
+  try { return await decodeWithImg(blob); }
+  catch { throw new Error(`Couldn't read ${file.name} as an image. Try a JPG or PNG photo?`); }
+}
+async function decodeWithImg(blob, maxSide = 4096) {
+  const url = URL.createObjectURL(blob);
+  try {
+    const img = new Image(); img.decoding = 'async'; img.src = url;
+    await (img.decode ? img.decode() : new Promise((res, rej) => { img.onload = res; img.onerror = rej; }));
+    const w = img.naturalWidth, h = img.naturalHeight; if (!w || !h) throw new Error('empty');
+    const k = Math.min(1, maxSide / Math.max(w, h));
+    const c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c; // a canvas works everywhere an ImageBitmap does here (width, height, drawImage)
+  } finally { URL.revokeObjectURL(url); }
 }
 export function drawToCanvas(bmp, maxSide = 3200, bg = '#fff') {
   const k = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
